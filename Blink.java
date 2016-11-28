@@ -11,7 +11,7 @@ public class Blink {
 	public static GUI gui;
 	
 	public vLedger a;
-	public Budget b;
+	public vBudget b;
 	
 	public Blink(){
 		
@@ -41,7 +41,7 @@ public class Blink {
 		
 		
 		if(fileName[2].equals("Budget")){
-			b = new Budget(fileName, this);
+			b = new vBudget(fileName, this);
 			
 			b.updateRightPane();
 			b.updateCenterPane();

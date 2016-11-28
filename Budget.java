@@ -23,7 +23,6 @@ import javax.swing.table.DefaultTableModel;
  */
 public class Budget {
 
-	public static Blink blink;
 	
 	public BigDecimal beginingBal = new BigDecimal(0);
 	
@@ -53,7 +52,7 @@ public class Budget {
 	 * @param fileName  Filename to load.  
 	 * @param blink
 	 */
-	public Budget(String[] fileName, Blink blink) {
+	public Budget(String[] fileName) {
 		new File("data").mkdir();
 		
 		this.fileName = fileName;
@@ -66,7 +65,6 @@ public class Budget {
 			budgetList.add(new BEntry(categories[i]));
 		}
 		
-		//TODO
 		//set up way to read ledger entries and store in budgetlist
 		readLedgers();
 		
@@ -159,143 +157,20 @@ public class Budget {
 			
 		}
 	}
+	public void addEditItems(String resultsBudget, int index){
 
-	/**
-	 * Updates Center Panel
-	 */
-	public void updateCenterPane() {
-
-		JPanel center = new JPanel(new BorderLayout());
 		
-		//TODO use expanded columns.
-		//String[] columnNames = {"#", "Category", "Budgeted", "Rollover", "Total", "Spent", "Available"};
-		String[] columnNames = {"#", "Category", "Budgeted", "Spent", "Available"};
 		
-		//Object[][] data = new Object[budgetList.size()][7];
-		Object[][] data = new Object[budgetList.size()][5];
+		String sanitizedResults = sanitizedResults(resultsBudget);
 		
-
-		for(int i=0; i<budgetList.size(); i++){
-			data[i][0] = (i+1) + "";
-			//String[] tempArray = budgetList.get(i).returnArray();
-			String[] tempArray = budgetList.get(i).returnSmallArray();
-			for (int j=0; j<tempArray.length; j++){
-				data[i][(j+1)] = tempArray[j];
-			}
+		
+		if(index<budgetList.size()){
+			budgetList.get(index).setBudgeted(sanitizedResults);
 		}
 		
-		DefaultTableModel model = new DefaultTableModel(data, columnNames);
-		JTable table = new JTable(model);
 		
-		JScrollPane scroll = new JScrollPane(table);
-		
-		
-		center.add(scroll, BorderLayout.CENTER);
-		
-		JButton addLine = new JButton("Edit Budget Entry");
-
-		addLine.addActionListener(new ActionListener(){
-
-			@Override
-			public void actionPerformed(ActionEvent arg0) {
-				
-				Budget.this.editItems();
-			}
-		});
-		
-		//TODO create add category button
-		/*
-		JButton editLine = new JButton("Edit Entry");
-
-		editLine.addActionListener(new ActionListener(){
-
-			@Override
-			public void actionPerformed(ActionEvent arg0) {
-				System.out.println("Clicked editline button");
-				
-				//Ledger.this.EditItems();
-			}
-		});
-		*/
-		JPanel panel = new JPanel(new BorderLayout());
-		
-		panel.add(addLine, BorderLayout.WEST);
-		//panel.add(editLine, BorderLayout.EAST);
-		
-		center.add(panel, BorderLayout.SOUTH);
-		
-		Blink.updateCenterPane(center);
+		savefile();
 	}
-
-
-	/**
-	 * Edit an already existing item.
-	 */
-	protected void editItems() {
-		
-		JPanel panel = new JPanel(new GridLayout(2,1));
-		JTextField field = new JTextField("");
-		JLabel label = new JLabel("Enter Row Number to edit");
-		
-		panel.add(label);
-		panel.add(field);
-		
-		int selection = 1;
-		
-		int result = JOptionPane.showConfirmDialog(null, panel, "Enter Data", JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
-		if(result == JOptionPane.OK_OPTION){
-			try{
-				selection = Integer.parseInt(field.getText());
-			}catch(NumberFormatException e){
-				return;
-			}
-			int index = selection-1;
-			if (index<budgetList.size()){
-				//String[] tempArray = ledgerList[index].returnArray();
-				addEditItems(budgetList.get(index).getBudgeted().toString(), index);
-			}
-		}
-	}
-
-	/**
-	 * Pop up menu to get user input.
-	 * @param tempArray
-	 * @param index
-	 */
-	protected void addEditItems(String tempValue, int index) {
-		JTextField field1 = new JTextField(tempValue);
-		JPanel panel = new JPanel(new GridLayout(2,1));
-		
-		String labelsString = "Budgeted Amount";
-		
-		JLabel label = new JLabel(labelsString);
-		panel.add(label);
-		
-		String[] categories = Data.getCategories();
-		
-		//TODO, change Row Selection to drowndown.
-		JComboBox<String> dropdown = new JComboBox<String>(categories);
-		
-		panel.add(field1);
-		
-		int result = JOptionPane.showConfirmDialog(null, panel, "Enter Data", JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
-		if(result == JOptionPane.OK_OPTION){
-			String resultsBudget = field1.getText();
-			
-			String sanitizedResults = sanitizedResults(resultsBudget);
-			
-			
-			if(index<budgetList.size()){
-				budgetList.get(index).setBudgeted(sanitizedResults);
-			}
-			
-			
-			updateCenterPane();
-			updateRightPane();
-			savefile();
-		}
-	}
-
 	/**
 	 * Sanitize results to make sure they are valid.
 	 * Remove all commas form use input.
@@ -320,66 +195,8 @@ public class Budget {
 		return sanitizedResults;
 	}
 
-//TODO Update right panel
-	/**
-	 * Updates the right hand side panel.
-	 */
-	public void updateRightPane() {
-		
-		
-		String line0 = " ";
-		String line1 = "Total Acct Balances: $" + totalAcctBal();
-		String line2 = " ";
-		String line3 = "Total Expenses: $" + totalExp();
-		String line4 = "Total Budgeted: $" + totalBudg();
-		String line5 = " ";
-		String line6 = " ";
-		String line7 = "Available to Budget: $" + totalAvailable();
-		String line8 = " ";
-		
-		
-		String[] rightText = {line0, line1, line2, line3, line4, line5, line6, line7, line8};
-		
-		JPanel right = new JPanel();
-		
-		/*
-		JButton editStart = new JButton("Edit Starting Balance");
-		editStart.addActionListener(new ActionListener(){
-
-			@Override
-			public void actionPerformed(ActionEvent arg0) {
-				//Ledger.this.editStarting();
-			}
-		});
-		right.add(editStart);
-		*/
-		
-		right.setLayout(new BoxLayout(right, BoxLayout.Y_AXIS));
-		
-		for(String text : rightText){
-			JLabel label = new JLabel(text);
-			right.add(label);
-		}
-		
-		//TODO finalize Button
-		/*
-		JButton finalizeAcct = new JButton("Finalize Account");
-		finalizeAcct.addActionListener(new ActionListener(){
-
-			@Override
-			public void actionPerformed(ActionEvent arg0) {
-				//Ledger.this.finalizeAcct();
-			}
-		});
-		right.add(finalizeAcct);
-		*/
-		
-		Blink.updateRightPane(right);
-		
-	}
 	
-	
-	private String totalAvailable() {
+	public String totalAvailable() {
 		BigDecimal total = new BigDecimal("0");
 		
 		total = total.add(totalAcct);
@@ -388,7 +205,7 @@ public class Budget {
 		return total.toString();
 	}
 
-	private String totalBudg() {
+	public String totalBudg() {
 		BigDecimal total = new BigDecimal("0");
 
 		for(int i=0; i<budgetList.size(); i++){
@@ -400,7 +217,7 @@ public class Budget {
 		return total.toString();
 	}
 
-	private String totalExp() {
+	public String totalExp() {
 		BigDecimal total = new BigDecimal("0");
 		
 		for(int i=0; i<budgetList.size(); i++){
@@ -412,7 +229,7 @@ public class Budget {
 		return total.toString();
 	}
 
-	private String totalAcctBal() {
+	public String totalAcctBal() {
 		BigDecimal total = new BigDecimal("0");
 		
 		for(int i=0; i<ledgerStore.size(); i++){
@@ -423,31 +240,6 @@ public class Budget {
 		
 		return total.toString();
 	}
-
-	//TODO remake finalized.
-	/**
-	 * Finalizes account and sets up next month's account.
-	 */
-	protected void finalizeAcct() {
-		int result = JOptionPane.showConfirmDialog(null, "Are you sure you are finished with this month?\nThis will move the current Bank Balance to next month's starting balance and move any pending transactions.");
-		if(result == JOptionPane.OK_OPTION){
-			
-			finalized = true;
-			savefile();
-			
-			String[] tempFileName = Data.nextFileName(fileName);
-			Ledger tempLedger = new Ledger(tempFileName);
-			//tempLedger.updateStarting(beginingBal.add(clearedItems()));
-			
-			for(int i=0; i<ledgerList.size(); i++){
-				if(!ledgerList.get(i).cleared){
-					tempLedger.ledgerList.add(ledgerList.get(i));
-					tempLedger.savefile();
-				}
-			}
-		}
-	}
-
 
 
 	/**
