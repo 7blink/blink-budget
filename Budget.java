@@ -171,6 +171,7 @@ public class Budget {
 		
 		savefile();
 	}
+	
 	/**
 	 * Sanitize results to make sure they are valid.
 	 * Remove all commas form use input.
@@ -179,7 +180,6 @@ public class Budget {
 	 * @return
 	 */
 	private String sanitizedResults(String resultsBudget) {
-		// TODO Auto-generated method stub
 		String sanitizedResults;
 		
 		sanitizedResults = resultsBudget.replace(",", ";");
@@ -266,5 +266,14 @@ public class Budget {
 			e.printStackTrace();
 		}
 	}
+	
+	
+	/**
+	 * 
+	 */
+	public LinkedList<BEntry> getBudgetList(){
+		return budgetList;
+	}
+	
 
 }

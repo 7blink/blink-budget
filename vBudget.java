@@ -1,7 +1,10 @@
 import java.awt.BorderLayout;
 import java.awt.GridLayout;
+import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
@@ -55,6 +58,23 @@ public class vBudget {
 		
 		DefaultTableModel model = new DefaultTableModel(data, columnNames);
 		JTable table = new JTable(model);
+		
+		table.setEnabled(false);
+		
+		
+		table.addMouseListener(new MouseAdapter() {
+		    public void mousePressed(MouseEvent me) {
+		        JTable table =(JTable) me.getSource();
+		        Point p = me.getPoint();
+		        int row = table.rowAtPoint(p);
+		        if (me.getClickCount() == 2) {
+
+		        	addEditItems(b.getBudgetList().get(row).getBudgeted().toString(), row);
+		        }
+		    }
+		});
+		
+		
 		
 		JScrollPane scroll = new JScrollPane(table);
 		
