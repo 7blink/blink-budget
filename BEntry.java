@@ -45,6 +45,10 @@ public class BEntry {
 		return subExpense;
 	}
 	
+	public String getAvailable(){
+		return available().toString();
+	}
+	
 	public String toString(){
 		return category + "," + budgeted.toString() + "," + rollover.toString() + ",";
 	}

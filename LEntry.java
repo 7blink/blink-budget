@@ -29,7 +29,6 @@ public class LEntry {
 		else
 			cleared = true;
 		
-		System.out.println(toString());
 	}
 	
 	public String[] returnArray(){

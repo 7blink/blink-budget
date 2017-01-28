@@ -27,6 +27,7 @@ public class vBudget {
 	public vBudget(String[] fileName, Blink blink) {
 
 		this.fileName = fileName;
+		System.out.println(fileName[2]);
 		this.blink = blink;
 		b = new Budget(fileName);
 	}
@@ -39,18 +40,17 @@ public class vBudget {
 
 		JPanel center = new JPanel(new BorderLayout());
 		
-		//TODO use expanded columns.
-		//String[] columnNames = {"#", "Category", "Budgeted", "Rollover", "Total", "Spent", "Available"};
-		String[] columnNames = {"#", "Category", "Budgeted", "Spent", "Available"};
+		String[] columnNames = {"#", "Category", "Budgeted", "Rollover", "Total", "Spent", "Available"};
+		//String[] columnNames = {"#", "Category", "Budgeted", "Spent", "Available"};
 		
-		//Object[][] data = new Object[budgetList.size()][7];
-		Object[][] data = new Object[b.budgetList.size()][5];
+		Object[][] data = new Object[b.budgetList.size()][7];
+		//Object[][] data = new Object[b.budgetList.size()][5];
 		
 
 		for(int i=0; i<b.budgetList.size(); i++){
 			data[i][0] = (i+1) + "";
-			//String[] tempArray = budgetList.get(i).returnArray();
-			String[] tempArray = b.budgetList.get(i).returnSmallArray();
+			String[] tempArray = b.budgetList.get(i).returnArray();
+			//String[] tempArray = b.budgetList.get(i).returnSmallArray();
 			for (int j=0; j<tempArray.length; j++){
 				data[i][(j+1)] = tempArray[j];
 			}
@@ -220,17 +220,17 @@ public class vBudget {
 		}
 		
 		//TODO finalize Button
-		/*
+		
 		JButton finalizeAcct = new JButton("Finalize Account");
 		finalizeAcct.addActionListener(new ActionListener(){
 
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
-				//Ledger.this.finalizeAcct();
+				vBudget.this.finalizeAcct();
 			}
 		});
 		right.add(finalizeAcct);
-		*/
+		
 		
 		Blink.updateRightPane(right);
 		
@@ -240,25 +240,14 @@ public class vBudget {
 	/**
 	 * Finalizes account and sets up next month's account.
 	 */
-	/*protected void finalizeAcct() {
+	protected void finalizeAcct() {
 		int result = JOptionPane.showConfirmDialog(null, "Are you sure you are finished with this month?\nThis will move the current Bank Balance to next month's starting balance and move any pending transactions.");
 		if(result == JOptionPane.OK_OPTION){
 			
-			finalized = true;
-			savefile();
+			b.finalizeAcct();
 			
-			String[] tempFileName = Data.nextFileName(fileName);
-			Ledger tempLedger = new Ledger(tempFileName);
-			//tempLedger.updateStarting(beginingBal.add(clearedItems()));
-			
-			for(int i=0; i<ledgerList.size(); i++){
-				if(!ledgerList.get(i).cleared){
-					tempLedger.ledgerList.add(ledgerList.get(i));
-					tempLedger.savefile();
-				}
-			}
 		}
-	}*/
+	}
 
 
 }

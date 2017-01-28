@@ -57,7 +57,7 @@ public class Budget {
 		
 		this.fileName = fileName;
 		
-		file = "data/" + fileName[0] + "-" + fileName[1] + "-" + fileName[2] + ".txt";
+		file = "data/" + fileName[0] + "-" + fileName[1] + "-" + "Budget" + ".txt";
 		
 		//Set up default budget items;
 		this.categories = Data.getCategories();
@@ -239,6 +239,36 @@ public class Budget {
 		totalAcct = total;
 		
 		return total.toString();
+	}
+	
+	//TODO remake finalized.
+	/**
+	 * Finalizes account and sets up next month's account.
+	 */
+	protected void finalizeAcct() {
+		int result = JOptionPane.showConfirmDialog(null, "Are you sure you are finished with this month?\nThis will move the current Bank Balance to next month's starting balance and move any pending transactions.");
+		if(result == JOptionPane.OK_OPTION){
+			
+			this.finalized = true;
+			this.savefile();
+			
+			String[] tempFileName = Data.nextFileName(this.budgetfileName);
+			System.out.println(this.budgetfileName[2]);
+			Budget tempBudget = new Budget(tempFileName);
+			
+			for(int i=0; i<this.budgetList.size(); i++){
+				for(int j=0; j<tempBudget.budgetList.size(); j++){
+					if(this.budgetList.get(i).getCategory().equals(tempBudget.budgetList.get(j).getCategory())){
+						System.out.println(this.budgetList.get(i).getCategory() + " " + tempBudget.budgetList.get(j).getCategory());
+						tempBudget.budgetList.get(j).setRollover(this.budgetList.get(i).getAvailable());
+						tempBudget.budgetList.get(j).setBudgeted(this.budgetList.get(i).getBudgeted());
+						System.out.println(this.budgetList.get(j).available());
+					}
+				}
+			}
+			
+			tempBudget.savefile();
+		}
 	}
 
 

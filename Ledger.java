@@ -58,7 +58,6 @@ public class Ledger {
 				if(br.ready())
 					try {
 						String firstLine = br.readLine();
-						System.out.println(firstLine);
 						beginingBal = new BigDecimal(firstLine);
 						
 						String secondline = br.readLine();
