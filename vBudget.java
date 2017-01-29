@@ -27,7 +27,6 @@ public class vBudget {
 	public vBudget(String[] fileName, Blink blink) {
 
 		this.fileName = fileName;
-		System.out.println(fileName[2]);
 		this.blink = blink;
 		b = new Budget(fileName);
 	}
@@ -40,19 +39,29 @@ public class vBudget {
 
 		JPanel center = new JPanel(new BorderLayout());
 		
-		String[] columnNames = {"#", "Category", "Budgeted", "Rollover", "Total", "Spent", "Available"};
+		String[] columnNames = {" ", "Category", "Budgeted", "Rollover", "Total", "Spent", "Available"};
 		//String[] columnNames = {"#", "Category", "Budgeted", "Spent", "Available"};
 		
-		Object[][] data = new Object[b.budgetList.size()][7];
+		Object[][] data = new Object[b.budgetList.size() + Data.getMainCategories().length][8];
 		//Object[][] data = new Object[b.budgetList.size()][5];
 		
-
-		for(int i=0; i<b.budgetList.size(); i++){
-			data[i][0] = (i+1) + "";
-			String[] tempArray = b.budgetList.get(i).returnArray();
-			//String[] tempArray = b.budgetList.get(i).returnSmallArray();
-			for (int j=0; j<tempArray.length; j++){
-				data[i][(j+1)] = tempArray[j];
+		int rowCount = 0;
+		
+		for(int k=0; k<Data.getMainCategories().length; k++){
+			data[rowCount][0] = Data.getMainCategories()[k];
+			rowCount++;
+			
+			
+			for(int i=0; i<b.budgetList.size(); i++){
+				if(Data.getMainCategories()[k].equals(b.budgetList.get(i).lookupMainCategory())){
+					data[rowCount][0] =  "";
+					String[] tempArray = b.budgetList.get(i).returnArray();
+					//String[] tempArray = b.budgetList.get(i).returnSmallArray();
+					for (int j=0; j<tempArray.length; j++){
+						data[rowCount][(j+1)] = tempArray[j];
+					}
+					rowCount++;
+				}
 			}
 		}
 		
@@ -69,7 +78,13 @@ public class vBudget {
 		        int row = table.rowAtPoint(p);
 		        if (me.getClickCount() == 2) {
 
-		        	addEditItems(b.getBudgetList().get(row).getBudgeted().toString(), row);
+
+			        String category = table.getModel().getValueAt(row, 1).toString();
+			        for(int i=0; i<b.getBudgetList().size(); i++){
+			        	if(b.getBudgetList().get(i).getCategory().equals(category))
+			        		addEditItems(b.getBudgetList().get(i).getBudgeted().toString(), i);
+			        }
+
 		        }
 		    }
 		});

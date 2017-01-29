@@ -24,6 +24,10 @@ public class BEntry {
 		
 		return tempArray;
 	}
+	
+	public String lookupMainCategory(){
+		return Data.lookupMainCategory(getCategory());
+	}
 		
 	public BigDecimal totalBudget(){
 			BigDecimal total = new BigDecimal("0");

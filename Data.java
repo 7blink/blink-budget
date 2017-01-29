@@ -17,6 +17,15 @@ public class Data {
 		
 		return tempCategories;
 	}
+	
+	public static String[] getMainCategories(){
+		String [] tempCategories = {"Main", "Other"};
+		return tempCategories;
+	}
+	
+	public static String lookupMainCategory(String subCategory){
+		return "Main";
+	}
 
 	/**
 	 * Creates the next FileName for a ledger or budget.
